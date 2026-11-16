@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% from "_lencana.html" import status_cucian %}
+{% block judul %}Laporan - Pemogan Laundry{% endblock %}
+{% block heading %}Laporan{% endblock %}
+
+{% block konten %}
+<form method="get" class="periode">
+  <label for="bulan">Periode</label>
+  <select id="bulan" name="bulan" onchange="this.form.submit()">
+    {% for b in daftar_bulan %}
+      <option value="{{ b }}" {{ 'selected' if b == bulan }}>{{ b | nama_bulan }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<div class="grid-stat">
+  <div class="kartu stat">
+    <span class="label">Nilai transaksi</span>
+    <span class="angka">{{ ringkas.nilai | rb }}</span>
+  </div>
+  <div class="kartu stat">
+    <span class="label">Pembayaran diterima</span>
+    <span class="angka hijau">{{ ringkas.diterima | rb }}</span>
+  </div>
+  <div class="kartu stat">
+    <span class="label">Belum dibayar</span>
+    <span class="angka kuning">{{ ringkas.belum | rb }}</span>
+  </div>
+</div>
+
+<div class="kartu jarak">
+  <h2>Nilai transaksi per minggu</h2>
+  <p class="redup">Dalam ribu rupiah. Mgg 1 = tanggal 1-7, Mgg 2 = 8-14, dan seterusnya.</p>
+  <div class="grafik">
+    {% for m in grafik %}
+    <div class="kolom">
+      <span class="nilai">{{ m.rb }}</span>
+      <div class="batang {{ 'tertinggi' if m.tertinggi }}" style="height: {{ m.px }}px"></div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="grafik-label">
+    {% for m in grafik %}<span>Mgg {{ m.no }}</span>{% endfor %}
+  </div>
+</div>
+
+<div class="dua-panel jarak">
+  <div class="kartu">
+    <h2>Nota belum lunas</h2>
+    {% for n in belum_lunas %}
+    <div class="baris-daftar">
+      <span>{{ n.no_nota }} · {{ n.pelanggan }}</span>
+      <strong>{{ n.sisa_tagihan | rp }}</strong>
+    </div>
+    {% else %}
+      <p class="redup">Tidak ada nota belum lunas pada periode ini.</p>
+    {% endfor %}
+  </div>
+
+  <div class="kartu">
+    <h2>Lewat batas ambil 7 hari</h2>
+    {% for n in lewat_batas %}
+    <div class="baris-daftar">
+      <span>
+        <strong>{{ n.no_nota }}</strong> · {{ n.pelanggan }}<br>
+        <span class="redup">Selesai {{ n.tanggal_selesai | tglp }}, batas ambil {{ n.batas_ambil | tglp }}</span>
+      </span>
+      <span class="lencana merah">
+        {{ 'Lewat ' ~ n.lewat_hari ~ ' hari' if n.lewat_hari > 0 else 'Lewat hari ini' }}
+      </span>
+    </div>
+    {% else %}
+      <p class="redup">Tidak ada cucian yang lewat batas ambil.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="kartu">
+  <h2>Jejak audit nota (15 nota yang terakhir diubah)</h2>
+  <table class="tabel">
+    <thead>
+      <tr>
+        <th>No. nota</th><th>Status cucian</th><th>Dibuat pada</th>
+        <th>Dimodifikasi pada</th><th>Dimodifikasi oleh</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in audit %}
+      <tr>
+        <td>{{ a.no_nota }}</td>
+        <td>{{ status_cucian(a.status_cucian) }}</td>
+        <td>{{ a.dibuat_pada | tgl }}</td>
+        <td>{{ a.dimodifikasi_pada | tgl }}</td>
+        <td>{{ a.dimodifikasi_oleh }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

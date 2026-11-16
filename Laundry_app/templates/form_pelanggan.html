@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block judul %}Pelanggan - Pemogan Laundry{% endblock %}
+{% block heading %}{{ 'Ubah pelanggan' if ubah else 'Tambah pelanggan' }}{% endblock %}
+
+{% block konten %}
+<form method="post" class="kartu kartu-login">
+  {% if error %}
+    <div class="galat">{{ error }}</div>
+  {% endif %}
+
+  <label for="nama">Nama</label>
+  <input type="text" id="nama" name="nama" value="{{ data.nama }}" maxlength="100" required autofocus>
+
+  <label for="telepon">Telepon</label>
+  <input type="text" id="telepon" name="telepon" value="{{ data.telepon }}" maxlength="20" required>
+
+  <label for="alamat">Alamat (boleh kosong)</label>
+  <input type="text" id="alamat" name="alamat" value="{{ data.alamat or '' }}" maxlength="200">
+
+  <button type="submit">Simpan</button>
+  <a href="/pelanggan" class="tautan-batal">Batal</a>
+</form>
+{% endblock %}
