@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block judul %}Pemogan Laundry{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">Pemogan Laundry</div>
+
+    <nav>
+      {% if session['user'] == 'petugas' %}
+        <a href="/" class="{{ 'aktif' if halaman == 'dashboard' }}">Dashboard</a>
+        <a href="/pelanggan" class="{{ 'aktif' if halaman == 'pelanggan' }}">Pelanggan</a>
+        <a href="/nota/baru" class="{{ 'aktif' if halaman == 'nota' }}">Nota baru</a>
+        <a href="/pembayaran" class="{{ 'aktif' if halaman == 'pembayaran' }}">Pembayaran</a>
+        <a href="/cucian" class="{{ 'aktif' if halaman == 'cucian' }}">Status cucian</a>
+      {% endif %}
+      <a href="/laporan" class="{{ 'aktif' if halaman == 'laporan' }}">Laporan</a>
+    </nav>
+
+    <div class="pengguna">
+      Masuk sebagai <strong>{{ session['user'] }}</strong><br>
+      <a href="/keluar">Keluar</a>
+    </div>
+  </aside>
+
+  <main class="isi">
+    <h1>{% block heading %}{% endblock %}</h1>
+
+    {% with pesan = get_flashed_messages(with_categories=true) %}
+      {% for kategori, isi in pesan %}
+        <div class="{{ kategori }} pesan">{{ isi }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    {% block konten %}{% endblock %}
+  </main>
+</body>
+</html>

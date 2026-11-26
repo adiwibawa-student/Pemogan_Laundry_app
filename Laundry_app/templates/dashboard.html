@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "_lencana.html" import status_bayar, status_cucian %}
+{% block judul %}Dashboard - Pemogan Laundry{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+
+{% block konten %}
+<div class="grid-stat">
+  <div class="kartu stat">
+    <span class="label">Belum lunas</span>
+    <span class="angka kuning">{{ stat.belum_lunas }}</span>
+  </div>
+  <div class="kartu stat">
+    <span class="label">Siap diambil</span>
+    <span class="angka hijau">{{ stat.siap_diambil }}</span>
+  </div>
+  <div class="kartu stat">
+    <span class="label">Lewat batas ambil (&gt; 7 hari)</span>
+    <span class="angka merah">{{ stat.lewat_batas }}</span>
+  </div>
+  <div class="kartu stat">
+    <span class="label">Total sisa tagihan</span>
+    <span class="angka">{{ stat.tagihan | rp }}</span>
+  </div>
+</div>
+
+<div class="kartu">
+  <h2>Nota terbaru</h2>
+  <table class="tabel">
+    <thead>
+      <tr>
+        <th>No. nota</th><th>Pelanggan</th><th>Layanan</th><th>Tanggal terima</th>
+        <th>Status cucian</th><th>Total biaya</th><th>Sisa tagihan</th><th>Pembayaran</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for n in nota %}
+      <tr>
+        <td>{{ n.no_nota }}</td>
+        <td>{{ n.pelanggan }}</td>
+        <td>{{ n.layanan }}</td>
+        <td>{{ n.tanggal_terima | tgl }}</td>
+        <td>{{ status_cucian(n.status_cucian) }}</td>
+        <td>{{ n.total_biaya | rp }}</td>
+        <td>{{ n.sisa_tagihan | rp }}</td>
+        <td>{{ status_bayar(n.status_pembayaran) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
